@@ -8,23 +8,28 @@ import {
 } from 'react-native';
 
 import Levels from "../levels/levels";
+import Slider from "./Slider";
+
 const imageCache = require("../images/cracked.png");
 
 class Grid extends Component{
 
   state = {
-    brickArray: Levels[this.props.level]
+    brickArray: Levels[this.props.level],
+    sliderPosition: 0.5
   }
 
   cracked = (bool) => {
     if(bool){
       return (
-        <Image
-          style={styles.brickImage}
-          source={imageCache}
-          resizeMode={"contain"}
-          resizeMethod={"resize"}
-        />
+        <View style={{flex: 1, padding: 2}}>
+          <Image
+            style={styles.brickImage}
+            source={imageCache}
+            resizeMode={"contain"}
+            resizeMethod={"resize"}
+          />
+        </View>
       )
     }
   }
@@ -41,12 +46,11 @@ class Grid extends Component{
             styles.brick, 
             brickData.exists && {
               backgroundColor: brickData.color,
-              borderBottomColor: "rgba(0,0,0,0.2)",
+              borderBottomColor: "rgba(0,0,0,0.3)",
               borderRightColor: "rgba(0,0,0,0.2)",
               borderLeftColor:"rgba(255,255,255,0.2)",
-              borderTopColor: "rgba(255,255,255,0.2)",
-              borderWidth: 2,
-              borderBottomWidth: 3
+              borderTopColor: "rgba(255,255,255,0.3)",
+              borderWidth: 4,
             },
           ]} 
         >
@@ -92,6 +96,7 @@ class Grid extends Component{
             {this.renderBricks()}
             </View>
             <View style={styles.space}></View>
+            <Slider/>
         </View>
     );
   }
@@ -116,7 +121,8 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
     width: "100%",
-    opacity: 0.5
+    opacity: 0.5,
+
   }
 });
 

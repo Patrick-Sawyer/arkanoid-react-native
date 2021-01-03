@@ -9,6 +9,8 @@ target 'blocks' do
   use_react_native!(:path => config["reactNativePath"])
 
 
+  pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
+
   target 'blocksTests' do
     inherit! :complete
     # Pods for testing

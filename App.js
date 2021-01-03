@@ -12,7 +12,8 @@ import Grid from "./app/components/Grid";
 class App extends Component{
 
   state = {
-    level: 0
+    level: 0,
+    lives: 3
   }
 
   render = () => {
@@ -20,9 +21,12 @@ class App extends Component{
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor={"#b8b8b8"} />
         <View style={styles.title}>
-          <Text style={styles.titleText}>
-            {"LEVEL: " + (this.state.level + 1)}
-          </Text>
+            <Text style={styles.titleText}>
+              {"LEVEL: " + (this.state.level + 1)}
+            </Text>
+            <Text style={styles.titleText}>
+              {"LIVES: " + (this.state.lives)}
+            </Text>
         </View>
         <View style={styles.gameContainer}>
           <Grid
@@ -42,12 +46,15 @@ const styles = StyleSheet.create({
    title:{
      height: 50,
      justifyContent: "center",
-     alignItems: "center"
+     alignItems: "center",
+     flexDirection: "row",
+     justifyContent: "space-evenly",
+     paddingBottom: 5,
    },
    titleText: {
     fontSize: 30,
     color: "#363636",
-    fontWeight: "bold"
+    fontWeight: "bold",
    },
    gameContainer: {
      flexGrow: 1

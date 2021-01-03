@@ -12,7 +12,7 @@ const brick = (color = false, weapon = null) => {
 }
 
 const colors = [
-    "#E89005",
+    "#E8a005",
     "#EC7505",
     "#D84A05",
     "#F42B03",
