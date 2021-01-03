@@ -16,7 +16,9 @@ class Grid extends Component{
 
   state = {
     brickArray: Levels[this.props.level],
-    sliderPosition: 0.5
+    sliderPosition: 0.5,
+    leftSliderPostion: null,
+    rightSliderPosition: null,
   }
 
   cracked = (bool) => {
@@ -89,6 +91,13 @@ class Grid extends Component{
     )
   }
 
+  setSliderPosition = (left, right) => {
+    this.setState({
+      leftSliderPostion: left,
+      rightSliderPosition: right,
+    })
+  }
+
   render = () => {
     return (
         <View key={"grid"} style={styles.container}>
@@ -96,7 +105,9 @@ class Grid extends Component{
             {this.renderBricks()}
             </View>
             <View style={styles.space}></View>
-            <Slider/>
+            <Slider
+              setSliderPosition={this.setSliderPosition}
+            />
         </View>
     );
   }
