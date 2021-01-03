@@ -45,7 +45,7 @@ class Slider extends Component {
         return (
             <View style={styles.sliderContainer}
                 onStartShouldSetResponder={(event) => {
-                    const {pageX} = event.nativeEvent;
+                    const pageX = Math.round(event.nativeEvent.pageX, 0);
                     this.setState({
                         oldFingerPostion: pageX
                     })
