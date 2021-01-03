@@ -41,11 +41,12 @@ class Grid extends Component{
             styles.brick, 
             brickData.exists && {
               backgroundColor: brickData.color,
-              borderBottomColor: "rgba(100,100,100,0.7)",
-              borderRightColor: "rgba(100,100,100,0.7)",
-              borderLeftColor:"rgba(175,175,175,0.7)",
-              borderTopColor: "rgba(175,175,175,0.7)",
+              borderBottomColor: "rgba(0,0,0,0.2)",
+              borderRightColor: "rgba(0,0,0,0.2)",
+              borderLeftColor:"rgba(255,255,255,0.2)",
+              borderTopColor: "rgba(255,255,255,0.2)",
               borderWidth: 2,
+              borderBottomWidth: 3
             },
           ]} 
         >
