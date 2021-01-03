@@ -61,10 +61,13 @@ class Slider extends Component {
 
                 }}
                 onMoveShouldSetResponder={(event) => {
-                    const {pageX} = event.nativeEvent;
-                    if(this.state.sliderActive){
-                        this.sliderMove(pageX)
-                    };
+                    const pageX = Math.round(event.nativeEvent.pageX, 0);
+                    let difference = pageX - this.state.oldFingerPostion;
+                    if(difference >= 1 || difference <= -1){
+                        if(this.state.sliderActive){
+                            this.sliderMove(pageX)
+                        };
+                    }
                 }}
                 onResponderRelease={() => {
                     this.setState({
@@ -80,7 +83,7 @@ class Slider extends Component {
                 ]}>
                     <LinearGradient 
                         colors={gradient} 
-                        style={{width: 20, backgroundColor: "red", borderTopLeftRadius: 12, borderBottomLeftRadius: 12}}
+                        style={{width: 20, backgroundColor: "silver", borderTopLeftRadius: 12, borderBottomLeftRadius: 12}}
                     />
                     <LinearGradient 
                         colors={gradient} 
@@ -88,7 +91,7 @@ class Slider extends Component {
                     />
                     <LinearGradient 
                         colors={gradient} 
-                        style={{width: 20, backgroundColor: "red", borderTopRightRadius: 12, borderBottomRightRadius: 12}}
+                        style={{width: 20, backgroundColor: "silver", borderTopRightRadius: 12, borderBottomRightRadius: 12}}
                     />
                 </View>
             </View>
