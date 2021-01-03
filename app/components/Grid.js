@@ -3,7 +3,8 @@ import {
   StyleSheet,
   View,
   Image,
-  PixelRatio
+  PixelRatio,
+  Dimensions
 } from 'react-native';
 
 import Levels from "../levels/levels";
@@ -40,7 +41,10 @@ class Grid extends Component{
             styles.brick, 
             brickData.exists && {
               backgroundColor: brickData.color,
-              borderColor: "rgba(100,100,100,0.05)",
+              borderBottomColor: "rgba(100,100,100,0.7)",
+              borderRightColor: "rgba(100,100,100,0.7)",
+              borderLeftColor:"rgba(175,175,175,0.7)",
+              borderTopColor: "rgba(175,175,175,0.7)",
               borderWidth: 2,
             },
           ]} 
@@ -97,24 +101,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   brick: {
-    flex: 1,
-    height: "100%",
+    height: parseInt(Dimensions.get("screen").height / 17) / PixelRatio.get(),
   },
-    brickGrid: {
-    flex: 1,
+  brickGrid: {
   },
   brickRow: {
     flexDirection: "row",
-    flex: 1,
   },
   space: {
-    flex: 1.2
+    flexGrow: 1
   },
   brickImage: {
     flex: 1,
     height: "100%",
     width: "100%",
-    opacity: 0.7
+    opacity: 0.5
   }
 });
 
