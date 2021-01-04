@@ -20,8 +20,8 @@ class App extends Component{
   render = () => {
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor={"black"} />
-        <View style={{flex: 0.1, width: "100%", justifyContent: "center", borderBottomWidth: 5}}>
+        <StatusBar barStyle="light-content" backgroundColor={"#6d7868"} />
+        <View style={{flex: 0.1, width: "100%", justifyContent: "center", borderBottomWidth: 5, borderTopWidth: 5}}>
           <Image
             source={require("./app/images/danger.png")}
             style={{height: "100%", width: "100%"}}
@@ -44,7 +44,7 @@ class App extends Component{
         <View style={styles.gameContainer}>
         <Image
             source={require("./app/images/grunge.png")}
-            style={{height: "100%", width: "100%", position: "absolute", opacity: 0.025}}
+            style={{height: "110%", width: "100%", position: "absolute", opacity: 0.025}}
  
             resizeMode={"stretch"}
           />
@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
    },
    gameContainer: {
      flexGrow: 1,
-
    }
 });
 

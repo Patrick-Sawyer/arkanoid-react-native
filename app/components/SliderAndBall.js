@@ -167,11 +167,14 @@ class SliderAndBall extends Component {
                     style={[styles.slider, 
                         {
                             left: this.state.leftPosition,
+                            backgroundColor: "grey",
+                            width: this.state.currentWidth,
+                            borderRadius: 12
                         }
                 ]}>
                     <LinearGradient 
                         colors={gradient} 
-                        style={{width: 20, backgroundColor: "#bfbfbf", borderTopLeftRadius: 12, borderBottomLeftRadius: 12}}
+                        style={{width: 20, backgroundColor: "silver", borderTopLeftRadius: 12, borderBottomLeftRadius: 12}}
                     />
                     <LinearGradient 
                         colors={gradient} 
@@ -179,7 +182,7 @@ class SliderAndBall extends Component {
                     />
                     <LinearGradient 
                         colors={gradient} 
-                        style={{width: 20, backgroundColor: "#bfbfbf", borderTopRightRadius: 12, borderBottomRightRadius: 12}}
+                        style={{width: 20, backgroundColor: "silver", borderTopRightRadius: 12, borderBottomRightRadius: 12}}
                     />
                     <Image 
                         source={imageCache2}
