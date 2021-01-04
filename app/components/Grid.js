@@ -6,9 +6,10 @@ import {
   PixelRatio,
   Dimensions
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 import Levels from "../levels/levels";
-import Slider from "./Slider";
+import SliderAndBall from "./SliderAndBall";
 
 const imageCache = require("../images/cracked.png");
 const screenWidth = Dimensions.get("screen").width;
@@ -22,8 +23,8 @@ class Grid extends Component{
     rightSliderPosition: screenWidth/2 + 50,
   }
 
-  cracked = (bool) => {
-    if(bool){
+  cracked = (cracked) => {
+    if(cracked){
       return (
         <View style={{flex: 1, padding: 2}}>
           <Image
@@ -39,6 +40,19 @@ class Grid extends Component{
 
   shouldComponentUpdate = () => {
     return false;
+  }
+
+  gradient = (exists, cracked) => {
+    if(exists){
+      return (
+        <LinearGradient
+          colors={["rgba(0,0,0,0.3)", "rgba(0,0,0,0)","rgba(0,0,0,0)", "rgba(255,255,255,0.3)"]}
+          style={{flex: 1}}
+        >
+          {this.cracked(cracked)}
+        </LinearGradient>
+      )
+    }
   }
 
   brick = (row, index) => {
@@ -61,7 +75,8 @@ class Grid extends Component{
             },
           ]} 
         >
-          {this.cracked(brickData.cracked && brickData.exists)}
+          
+          {this.gradient(brickData.exists, brickData.cracked)}
         </View>
       </View>
     )
@@ -97,6 +112,7 @@ class Grid extends Component{
   }
 
   setSliderPosition = (left, right) => {
+
     this.setState({
       leftSliderPostion: left,
       rightSliderPosition: right,
@@ -110,7 +126,7 @@ class Grid extends Component{
             {this.renderBricks()}
             </View>
             <View style={styles.space}></View>
-            <Slider
+            <SliderAndBall
               setSliderPosition={this.setSliderPosition}
             />
         </View>
@@ -138,7 +154,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     opacity: 0.5,
-
   }
 });
 

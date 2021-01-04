@@ -1,1 +1,1 @@
-declare module "react-native-cached-images";
+declare module "react-native-radial-gradient";
