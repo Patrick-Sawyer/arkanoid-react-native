@@ -8,7 +8,7 @@ target 'blocks' do
 
   use_react_native!(:path => config["reactNativePath"])
 
-
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
   target 'blocksTests' do
     inherit! :complete
@@ -22,6 +22,11 @@ target 'blocks' do
   use_flipper!
   post_install do |installer|
     flipper_post_install(installer)
+    installer.pods_project.targets.each do |t|
+      t.build_configurations.each do |config|
+       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
+      end
+     end
   end
 end
 

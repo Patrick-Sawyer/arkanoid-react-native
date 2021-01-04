@@ -1,23 +1,32 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions, Image } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import RadialGradient from 'react-native-radial-gradient';
 
 const gradient = ['rgba(255,255,255,0.3)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0.6)'];
 const screenWidth = Dimensions.get("screen").width;
+const screenHeight = Dimensions.get("screen").height;
+const imageCache2 = require("../images/grunge2.png");
 
 class SliderAndBall extends Component {
     state = { 
-        currentWidth: 100,
+        currentWidth: screenWidth/4,
         sliderActive: false,
-        leftPosition: screenWidth/2 - 50,
+        leftPosition: screenWidth/2 - screenWidth/8,
         oldFingerPostion: null,
-        ballPositionLeft: screenWidth/2 - 15,
+        ballPositionLeft: (screenWidth/2 - 15),
         ballPositionBottom: 40,
         ballStuck: true,
+        thumbYStartPosition: null,
+        weaponFired: true,
+        ballInterval: null,
+        ballSpeed: 5,
     }
 
     sliderMove = (position) => {
+
+        //NEEDS A PRETTY SERIOUS REFACTOR
+
         let leftEdge = this.state.leftPosition;
         let rightEdge = leftEdge + this.state.currentWidth;
         let difference = position - this.state.oldFingerPostion;
@@ -51,7 +60,7 @@ class SliderAndBall extends Component {
             })
         }
 
-
+        //CODE TO UPDATE PARENT WITH SLIDER POSITION - WILL NEED TO ADD BALL POSITION
         //this.props.setSliderPosition(this.state.leftPosition, this.state.leftPosition + this.state.currentWidth);
 
         this.setState({
@@ -62,7 +71,8 @@ class SliderAndBall extends Component {
     ifBallStuck = (newValue) => {
         if(this.state.ballStuck){
             this.setState({
-                ballPositionLeft: newValue
+                ballPositionLeft: newValue,
+                ballPositionBottom: 40,
             })
         }
     }
@@ -79,12 +89,30 @@ class SliderAndBall extends Component {
                         width: 30,
                     }}
                 colors={['black','#8f8f8f','#bfbfbf','#e6e6e6']}
-                stops={[0.1,0.,0.3,0.75]}
                 center={[15,40]}
                 radius={30}> 
                 </RadialGradient>
+                
             </View>
         );
+    }
+
+    fireWeapon = () => {
+        if(this.state.ballStuck){
+            this.animateBall()
+        }else{
+            //FIRE WEAPON IF ONE IS AVAILABLE
+        }
+    }
+
+    animateBall = () => {
+        this.setState({
+            ballStuck: false,
+        })
+    }
+
+    ballTick = () => {
+
     }
 
     slider = () => {
@@ -92,6 +120,8 @@ class SliderAndBall extends Component {
             <View style={styles.sliderContainer}
                 onStartShouldSetResponder={(event) => {
                     const pageX = Math.round(event.nativeEvent.pageX, 0);
+                    const pageY = Math.round(event.nativeEvent.pageY, 0);
+
                     this.setState({
                         oldFingerPostion: pageX
                     })
@@ -101,35 +131,47 @@ class SliderAndBall extends Component {
                     if((pageX > leftEdge) && (pageX < rightEdge)){
                         this.setState({
                             sliderActive: true,
+                            thumbYStartPosition: pageY
                         })
-
                     };
-
                 }}
                 onMoveShouldSetResponder={(event) => {
                     const pageX = Math.round(event.nativeEvent.pageX, 0);
+                    const pageY = Math.round(event.nativeEvent.pageY, 0);
+
                     let difference = pageX - this.state.oldFingerPostion;
                     if(difference >= 1 || difference <= -1){
                         if(this.state.sliderActive){
-                            this.sliderMove(pageX)
+                            this.sliderMove(pageX);
+                            if((pageY < (this.state.thumbYStartPosition - screenHeight/8)) && !this.state.weaponFired){
+                                this.setState({
+                                    weaponFired: true,
+                                })
+                                this.fireWeapon();
+                            }else if(pageY > (this.state.thumbYStartPosition - 20)){
+                                this.setState({
+                                    weaponFired: false,
+                                })
+                            }
                         };
                     }
                 }}
                 onResponderRelease={() => {
                     this.setState({
-                        sliderActive: false
+                        sliderActive: false,
+                        weaponFired: false,
                     });
                 }}
             >
                 <View 
                     style={[styles.slider, 
                         {
-                            left: this.state.leftPosition
+                            left: this.state.leftPosition,
                         }
                 ]}>
                     <LinearGradient 
                         colors={gradient} 
-                        style={{width: 20, backgroundColor: "silver", borderTopLeftRadius: 12, borderBottomLeftRadius: 12}}
+                        style={{width: 20, backgroundColor: "#bfbfbf", borderTopLeftRadius: 12, borderBottomLeftRadius: 12}}
                     />
                     <LinearGradient 
                         colors={gradient} 
@@ -137,7 +179,12 @@ class SliderAndBall extends Component {
                     />
                     <LinearGradient 
                         colors={gradient} 
-                        style={{width: 20, backgroundColor: "silver", borderTopRightRadius: 12, borderBottomRightRadius: 12}}
+                        style={{width: 20, backgroundColor: "#bfbfbf", borderTopRightRadius: 12, borderBottomRightRadius: 12}}
+                    />
+                    <Image 
+                        source={imageCache2}
+                        style={{height: "100%", width: this.state.currentWidth, opacity: 0.7, overflow: "hidden", borderRadius: 12, position: "absolute", top: 0}}
+                        resizeMode={"cover"}
                     />
                 </View>
             </View>
@@ -167,7 +214,8 @@ const styles = StyleSheet.create({
         left: 50,
     },
     sliderContainer: {
-        height: "100%"
+        height: "100%",
+        zIndex: 2,
     },
     ball: {
         height: 30,
@@ -175,6 +223,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         position: "absolute",
         overflow: "hidden",
+        zIndex: 1,
     }
 })
  
