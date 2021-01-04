@@ -11,14 +11,15 @@ import Levels from "../levels/levels";
 import Slider from "./Slider";
 
 const imageCache = require("../images/cracked.png");
+const screenWidth = Dimensions.get("screen").width;
 
 class Grid extends Component{
 
   state = {
     brickArray: Levels[this.props.level],
     sliderPosition: 0.5,
-    leftSliderPostion: null,
-    rightSliderPosition: null,
+    leftSliderPostion: screenWidth/2 - 50,
+    rightSliderPosition: screenWidth/2 + 50,
   }
 
   cracked = (bool) => {
@@ -34,6 +35,10 @@ class Grid extends Component{
         </View>
       )
     }
+  }
+
+  shouldComponentUpdate = () => {
+    return false;
   }
 
   brick = (row, index) => {
