@@ -40,7 +40,7 @@ class Slider extends Component {
             oldFingerPostion: position
         });
 
-        // updating state in parent (grid) makes it run like utter dogshit
+        // updating state in parent (grid) makes it run like utter dogshit, try redux
 
         // this.props.setSliderPosition(this.state.leftPosition, this.state.leftPosition + this.state.currentWidth);
     }
