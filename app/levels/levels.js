@@ -1,17 +1,14 @@
-const brick = (color = false, weapon = null) => {
-    let exists = true;
-    if(color == false){
-        exists = false;
-    }
+const brick = (row, column, color, weapon = null) => {
     return {
         color: color,
         cracked: false,
-        exists: exists,
-        weapon: weapon
+        weapon: weapon,
+        column: column,
+        row: row
     }
 }
 
-const colors = [
+const colors1 = [
     "#E8a005",
     "#EC7505",
     "#D84A05",
@@ -19,27 +16,20 @@ const colors = [
     "#E70E02"
 ]
 
-const blankRow = () => {
-    let array = [];
-    for(let i = 0; i < 7; i++){
-        array.push(brick())
-    }
-    return array;
-}
 
 const level1 = [
-    [brick(), brick(colors[3]), brick(colors[4]), brick(), brick(colors[4]), brick(colors[3]), brick()],
-    [brick(colors[3]), brick(colors[4]), brick(), brick(colors[4]), brick(), brick(colors[4]), brick(colors[3])],
-    [brick(colors[1]), brick(), brick(), brick(colors[3]), brick(), brick(), brick(colors[1])],
-    [brick(colors[0]), brick(colors[1]), brick(), brick(colors[1]), brick(), brick(colors[1]), brick(colors[0])],
-    [brick(), brick(colors[0]), brick(colors[1]), brick(), brick(colors[1]), brick(colors[0]), brick()],
-    blankRow(),
-    [brick(), brick(colors[0]), brick(colors[1]), brick(), brick(colors[1]), brick(colors[0]), brick()],
-    [brick(colors[0]), brick(colors[1]), brick(), brick(colors[2]), brick(), brick(colors[1]), brick(colors[0])],
-    [brick(colors[1]), brick(), brick(), brick(colors[1]), brick(), brick(), brick(colors[1])],
-    [brick(colors[0]), brick(colors[1]), brick(), brick(colors[0]), brick(), brick(colors[1]), brick(colors[0])],
-    [brick(), brick(colors[0]), brick(colors[1]), brick(), brick(colors[1]), brick(colors[0]), brick()],
-    blankRow()
+    brick(4, 4, colors1[0]),
+    brick(4, 3, colors1[1]),
+    brick(4, 1, colors1[2]),
+    brick(5, 3, colors1[3]),
+    brick(5, 4, colors1[4]),
+    brick(5, 5, colors1[1]),
+    brick(5, 6, colors1[2]),
+    brick(1, 3, colors1[3]),
+    brick(1, 2, colors1[4]),
+    brick(7, 6, colors1[0]),
+    brick(10, 2, colors1[0]),
+
 ];
 
 const Levels = [level1]

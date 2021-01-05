@@ -54,63 +54,62 @@ class Grid extends Component{
     return false;
   }
 
-  gradient = (exists, cracked) => {
-    if(exists){
+  gradient = (cracked) => {
       return (
         <LinearGradient
           colors={["rgba(0,0,0,0.2)", "rgba(0,0,0,0)","rgba(0,0,0,0)", "rgba(255,255,255,0.2)"]}
           style={{flex: 1, overflow: "hidden"}}
-        ><Image
+        >
+          <Image
             style={[styles.brickImage, {tintColor: "black", transform: [{scale: 7}], opacity: this.getRandomOpacity(), position: "relative", left: this.getRandomPosition(), top: this.getRandomPosition()}]}
             source={imageCache2}
             resizeMethod={"auto"}
             tintColor={"black"}
-        />
-        <View style={{position: "absolute", top: 0, height: "100%", width: "100%"}}>
-          {this.cracked(cracked)}
-        </View>
-         
+          />
+          <View style={{position: "absolute", top: 0, height: "100%", width: "100%"}}>
+            {this.cracked(cracked)}
+          </View>
         </LinearGradient>
       )
-    }
   }
 
-  brick = (row, index) => {
-    let brickData = this.state.brickArray[row][index];
+  brick = (brick) => {
     return (
       <View 
-        key={"row" + row + "index" + index} 
+        key={brick.column} 
         style={{flex: 1}}
       >
         <View 
           style={[
             styles.brick, 
-            brickData.exists && {
-              backgroundColor: brickData.color,
-              borderBottomColor: "rgba(0,0,0,0.35)",
-              borderRightColor: "rgba(0,0,0,0.15)",
-              borderLeftColor:"rgba(0,0,0,0.1)",
-              borderTopColor: "rgba(255,255,255,0.1)",
-              borderWidth: 4,
-            },
+            {
+              backgroundColor: brick.color
+            }
           ]} 
         >
-          {this.gradient(brickData.exists, brickData.cracked)}
+          {this.gradient(brick.cracked)}
         </View>
       </View>
     )
   }
 
-  renderRow = (index) => {
+  renderRow = (rowArray, index) => {
+
+    let emptyBrick = (index) => {
+      return (
+        <View key={index} style={styles.emptyBrick}/>
+      )
+    } 
 
     let array = [];
-
-    for(let i = 0; i < 7; i++){
-      array.push(
-        this.brick(index, i)
-      )
+    for(let i = 0; i <= 7; i++){
+      array.push(emptyBrick(i))
     }
 
+    for(let i = 0; i < rowArray.length; i++){
+      let column = rowArray[i].column;
+      array[column] = this.brick(rowArray[i], i)
+    }
     return (
       <View key={index} style={styles.brickRow}>
         {array}
@@ -119,15 +118,16 @@ class Grid extends Component{
   }
 
   renderBricks = () => {
-    let array = [];
+    let array = []
     for(let i = 0; i < 12; i++){
-      array.push(
-        this.renderRow(i)
-      )
+      let bricksInThisRow = this.state.brickArray.filter((brick) => {
+        if(brick.row == i){
+          return true;
+        }
+      })
+      array.push(this.renderRow(bricksInThisRow, i));
     }
-    return (
-      array
-    )
+    return array;
   }
 
   setSliderPosition = (left, right) => {
@@ -160,7 +160,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   brick: {
-    height: (parseInt((screenHeight * PixelRatio.get()) / 30))/PixelRatio.get()
+    height: (parseInt((screenHeight * PixelRatio.get()) / 30))/PixelRatio.get(),
+    borderBottomColor: "rgba(0,0,0,0.35)",
+    borderRightColor: "rgba(0,0,0,0.15)",
+    borderLeftColor:"rgba(0,0,0,0.1)",
+    borderTopColor: "rgba(255,255,255,0.1)",
+    borderWidth: 4,
+  },
+  emptyBrick: {
+    height: (parseInt((screenHeight * PixelRatio.get()) / 30))/PixelRatio.get(),
+    flex: 1,
   },
   brickGrid: {
     
@@ -170,7 +179,6 @@ const styles = StyleSheet.create({
   },
   gameSpace: {
     flexGrow: 1,
-    // borderWidth: 1
   },
   brickImage: {
     flex: 1,

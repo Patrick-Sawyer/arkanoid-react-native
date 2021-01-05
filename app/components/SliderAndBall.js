@@ -21,6 +21,8 @@ class SliderAndBall extends Component {
         weaponFired: true,
         ballInterval: null,
         ballSpeed: 5,
+        ballDirectionX: 1,
+        ballDirectionY: 0,
     }
 
     sliderMove = (position) => {
