@@ -60,12 +60,12 @@ class App extends Component{
             resizeMode={"stretch"}
           />
           <View style={styles.title}>
-            <View style={[styles.textBackground, {position: "relative", top: 3}]}>
+            <View style={styles.textBackground}>
               <Text style={styles.titleText}>
                 {":blocks:"}
               </Text>
             </View>
-            <View style={[styles.textBackground, {position: "relative", top: 3}]}>
+            <View style={styles.textBackground}>
               <Text style={[styles.titleText, {fontSize: 12, paddingBottom: 2}]}>
                 {"by Patrick Sawyer"}
               </Text>
@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
    textBackground: {
     backgroundColor: "rgba(255, 170, 0, 1)",
     borderRadius: 25,
-    position: "relative",
-    top: 1
+    position: "relative", 
+    top: 3
    },
    gameContainer: {
      flexGrow: 1,

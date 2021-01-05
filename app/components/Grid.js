@@ -63,6 +63,7 @@ class Grid extends Component{
         ><Image
             style={[styles.brickImage, {tintColor: "black", transform: [{scale: 7}], opacity: this.getRandomOpacity(), position: "relative", left: this.getRandomPosition(), top: this.getRandomPosition()}]}
             source={imageCache2}
+            resizeMethod={"auto"}
             tintColor={"black"}
         />
         <View style={{position: "absolute", top: 0, height: "100%", width: "100%"}}>
