@@ -17,12 +17,15 @@ const imageCache2 = require("../images/grunge2.png");
 const screenWidth = Dimensions.get("screen").width;
 const screenHeight = Dimensions.get("screen").height;
 
+const brickHeight = (parseInt((screenHeight * PixelRatio.get()) / 30))/PixelRatio.get();
+
 class Grid extends Component{
 
   state = {
     brickArray: Levels[this.props.level],
-    leftSliderPostion: screenWidth/2 - screenWidth/8,
-    rightSliderPosition: screenWidth/2 + screenWidth/8,
+    //THIS STARTING VALUE MIGHT NEED CHANGING
+    // leftSliderPostion: screenWidth/2 - screenWidth/8,
+    // rightSliderPosition: screenWidth/2 + screenWidth/8,
   }
 
   getRandomPosition = () => {
@@ -130,26 +133,31 @@ class Grid extends Component{
     return array;
   }
 
-  setSliderPosition = (left, right) => {
+  // setSliderPosition = (left, right) => {
 
-    this.setState({
-      leftSliderPostion: left,
-      rightSliderPosition: right,
-    })
-  }
+  //   this.setState({
+  //     leftSliderPostion: left,
+  //     rightSliderPosition: right,
+  //   })
+  // }
 
   render = () => {
     return (
-        <View key={"grid"} style={styles.container}>
-            
-            <View style={styles.gameSpace}>
-              <View style={styles.brickGrid}>
-                {this.renderBricks()}
-              </View>
+        <View 
+          key={"grid"} 
+          style={styles.container}
+        >
+          <View style={styles.gameSpace}>
+            <View style={styles.brickGrid}>
+              {this.renderBricks()}
             </View>
+          </View>
+          <View style={{position: "absolute", bottom: 0, height: "100%", width: "100%"}}>
             <SliderAndBall
-              setSliderPosition={this.setSliderPosition}
+              //setSliderPosition={this.setSliderPosition}
+
             />
+          </View>
         </View>
     );
   }
@@ -160,7 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   brick: {
-    height: (parseInt((screenHeight * PixelRatio.get()) / 30))/PixelRatio.get(),
+    height: brickHeight,
     borderBottomColor: "rgba(0,0,0,0.35)",
     borderRightColor: "rgba(0,0,0,0.15)",
     borderLeftColor:"rgba(0,0,0,0.1)",
@@ -168,7 +176,7 @@ const styles = StyleSheet.create({
     borderWidth: 4,
   },
   emptyBrick: {
-    height: (parseInt((screenHeight * PixelRatio.get()) / 30))/PixelRatio.get(),
+    height: brickHeight,
     flex: 1,
   },
   brickGrid: {

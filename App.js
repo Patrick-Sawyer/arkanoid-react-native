@@ -21,7 +21,7 @@ class App extends Component{
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor={"#6d7868"} />
-        <View style={{flex: 0.1, width: "100%", justifyContent: "center", borderBottomWidth: 5, borderTopWidth: 5}}>
+        <View style={{height: 50, width: "100%", justifyContent: "center", borderBottomWidth: 5, borderTopWidth: 5}}>
           <Image
             source={require("./app/images/danger.png")}
             style={{height: "100%", width: "100%"}}
@@ -52,7 +52,7 @@ class App extends Component{
             level={this.state.level}
           />
         </View>
-        <View style={{flex: 0.1, width: "100%", borderBottomWidth: 5, borderTopWidth: 5}}>
+        <View style={{height: 50, width: "100%", borderBottomWidth: 5, borderTopWidth: 5}}>
           <Image
             source={require("./app/images/danger.png")}
             style={{height: "100%", width: "100%"}}
