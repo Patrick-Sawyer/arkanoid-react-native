@@ -32,16 +32,13 @@ class SliderAndBall extends Component {
     }
 
     sliderMove = (position) => {
-
         position = position.toFixed(2);
         let leftEdge = this.state.leftPosition;
         let rightEdge = leftEdge + this.state.currentWidth;
         let difference = position - this.state.oldFingerPostion;
         let ballPositionInRelationToSlider = this.state.ballPositionLeft - leftEdge;
         let newLeftPosition = parseInt(position);
-
         if(position < leftEdge){
-
             this.setState({
                 leftPosition: parseInt(position),
                 rightPosition: parseInt(position + this.state.currentWidth),
@@ -73,9 +70,9 @@ class SliderAndBall extends Component {
                 this.ifBallStuck(parseInt(this.state.leftPosition + ballPositionInRelationToSlider))
             })
         }
-
+        
         //CODE TO UPDATE PARENT WITH SLIDER POSITION - WILL NEED TO ADD BALL POSITION
-        //this.props.setSliderPosition(this.state.leftPosition, this.state.leftPosition + this.state.currentWidth);
+        this.props.setSliderPosition(this.state.leftPosition, this.state.leftPosition + this.state.currentWidth);
 
         this.setState({
             oldFingerPostion: parseInt(position)
@@ -88,6 +85,7 @@ class SliderAndBall extends Component {
                 ballPositionLeft: newValue,
                 ballPositionBottom: 40,
             })
+            this.forceUpdate();
         }
     }
 
@@ -195,9 +193,9 @@ class SliderAndBall extends Component {
     }
 
     calculateNewAngle = (newHorizontal) => {
-        let positionOnSliderAsFraction = ((newHorizontal + 30 - this.state.leftPosition)/(this.state.rightPosition - this.state.leftPosition + 30)).toFixed(2);
-        let newX = ((positionOnSliderAsFraction - 0.5) * 1.5).toFixed(2);
-        let newY = Math.sqrt(1 - newX * newX).toFixed(2);
+        let positionOnSliderAsFraction = ((newHorizontal + 30 - this.state.leftPosition)/(this.state.rightPosition - this.state.leftPosition + 30)).toFixed(4);
+        let newX = ((positionOnSliderAsFraction - 0.5) * 1.5).toFixed(4);
+        let newY = Math.sqrt(1 - newX * newX).toFixed(4);
         return [newX, newY]
     }
 

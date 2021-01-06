@@ -23,9 +23,8 @@ class Grid extends Component{
 
   state = {
     brickArray: Levels[this.props.level],
-    //THIS STARTING VALUE MIGHT NEED CHANGING
-    // leftSliderPostion: screenWidth/2 - screenWidth/8,
-    // rightSliderPosition: screenWidth/2 + screenWidth/8,
+    leftSliderPostion: parseInt(screenWidth/2 - screenWidth/8),
+    rightSliderPosition: parseInt(screenWidth/2 + screenWidth/8),
   }
 
   getRandomPosition = () => {
@@ -133,13 +132,13 @@ class Grid extends Component{
     return array;
   }
 
-  // setSliderPosition = (left, right) => {
+  setSliderPosition = (left, right) => {
 
-  //   this.setState({
-  //     leftSliderPostion: left,
-  //     rightSliderPosition: right,
-  //   })
-  // }
+    this.setState({
+      leftSliderPostion: left,
+      rightSliderPosition: right,
+    })
+  }
 
   render = () => {
     return (
@@ -154,7 +153,7 @@ class Grid extends Component{
           </View>
           <View style={{position: "absolute", bottom: 0, height: "100%", width: "100%"}}>
             <SliderAndBall
-              //setSliderPosition={this.setSliderPosition}
+              setSliderPosition={this.setSliderPosition}
 
             />
           </View>
