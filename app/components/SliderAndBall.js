@@ -28,48 +28,49 @@ class SliderAndBall extends Component {
         ballDirectionX: 0,
         ballDirectionY: 1,
         gameHeight: null,
+        frameLength: 10,
     }
 
     sliderMove = (position) => {
-        console.log(position)
-        //NEEDS A PRETTY SERIOUS REFACTOR
+
         position = position.toFixed(2);
         let leftEdge = this.state.leftPosition;
         let rightEdge = leftEdge + this.state.currentWidth;
         let difference = position - this.state.oldFingerPostion;
         let ballPositionInRelationToSlider = this.state.ballPositionLeft - leftEdge;
+        let newLeftPosition = parseInt(position);
 
         if(position < leftEdge){
 
             this.setState({
-                leftPosition: parseInt(Math.round(position)),
-                rightPosition: parseInt(Math.round(position + this.state.currentWidth)),
+                leftPosition: parseInt(position),
+                rightPosition: parseInt(position + this.state.currentWidth),
             }, () => {
-                this.ifBallStuck(parseInt(Math.round(this.state.leftPosition + ballPositionInRelationToSlider)))
+                this.ifBallStuck(parseInt(this.state.leftPosition + ballPositionInRelationToSlider))
             })
         }else if(position > rightEdge){
 
             this.setState({
                 
-                leftPosition: parseInt(Math.round(position - this.state.currentWidth)),
-                rightPosition: parseInt(Math.round(position + this.state.currentWidth)),
+                leftPosition: parseInt(position - this.state.currentWidth),
+                rightPosition: parseInt(position),
             }, () => {
-                this.ifBallStuck(parseInt(Math.round(this.state.leftPosition + ballPositionInRelationToSlider)))
+                this.ifBallStuck(parseInt(this.state.leftPosition + ballPositionInRelationToSlider))
             })
         }else{
             
-            let newLeftPosition = parseInt(Math.round(this.state.leftPosition + difference).toFixed(2));
+            let newLeftPosition = parseInt(this.state.leftPosition + difference);
             if(newLeftPosition < 0){
                 newLeftPosition = 0;
-            }else if(newLeftPosition > (screenWidth - this.state.currentWidth)){
-                newLeftPosition = parseInt(Math.round(screenWidth - this.state.currentWidth));
+            }else if(newLeftPosition > parseInt(screenWidth - this.state.currentWidth)){
+                newLeftPosition = parseInt(screenWidth - this.state.currentWidth);
             }
 
             this.setState({
                 leftPosition: newLeftPosition,
-                rightPosition: parseInt(Math.round(newLeftPosition + this.state.currentWidth)),
+                rightPosition: parseInt(newLeftPosition + this.state.currentWidth),
             }, () => {
-                this.ifBallStuck(parseInt(Math.round(this.state.leftPosition + ballPositionInRelationToSlider)))
+                this.ifBallStuck(parseInt(this.state.leftPosition + ballPositionInRelationToSlider))
             })
         }
 
@@ -77,7 +78,7 @@ class SliderAndBall extends Component {
         //this.props.setSliderPosition(this.state.leftPosition, this.state.leftPosition + this.state.currentWidth);
 
         this.setState({
-            oldFingerPostion: position
+            oldFingerPostion: parseInt(position)
         });
     }
 
@@ -128,7 +129,7 @@ class SliderAndBall extends Component {
             ballStuck: false,
             ballInterval: setInterval(() => {
                 this.calculateNewPosition();
-            }, 10)
+            }, this.state.frameLength)
         });
 
     }
@@ -157,8 +158,8 @@ class SliderAndBall extends Component {
         let topWallImpact = (newVertical > gameHeight);
         let leftWallImpact = (newHorizontal <= 0);
         let rightWallImpact = (newHorizontal >= screenWidth - 30);
-        let sliderImpact = (ballDirectionY < 0) &&((newVertical <= 40) && (newHorizontal >= (leftPosition - 30)) && (newHorizontal <= (rightPosition)));
-        let dead = (newVertical <= 40 && ((newHorizontal < leftPosition - 30) || (newHorizontal > rightPosition)));
+        let sliderImpact = (ballDirectionY < 0 && newVertical <= 40 && newHorizontal >= (leftPosition - 30) && newHorizontal <= rightPosition);
+        let dead = (newVertical <= 40 && (newHorizontal < leftPosition - 30 || newHorizontal > rightPosition));
         
         if(topWallImpact){
             newVertical = gameHeight;
@@ -169,10 +170,10 @@ class SliderAndBall extends Component {
             ballDirectionY = newY;
             ballDirectionX = newX;
         }else if(dead){
-            clearInterval(this.state.ballInterval);
-            this.setState({
-                ballInterval: null,
-            });
+            // clearInterval(this.state.ballInterval);
+            // this.setState({
+            //     ballInterval: null,
+            // });
         }
 
         if(leftWallImpact){
@@ -181,10 +182,6 @@ class SliderAndBall extends Component {
         }else if(rightWallImpact){
             newHorizontal = screenWidth - 30;
             ballDirectionX = 0 - ballDirectionX;
-        }
-
-        if(newVertical < 40){
-            newVertical = 40
         }
 
         this.setState({
