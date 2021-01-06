@@ -31,41 +31,45 @@ class SliderAndBall extends Component {
     }
 
     sliderMove = (position) => {
-
+        console.log(position)
         //NEEDS A PRETTY SERIOUS REFACTOR
-        position = parseInt(position)
+        position = position.toFixed(2);
         let leftEdge = this.state.leftPosition;
         let rightEdge = leftEdge + this.state.currentWidth;
         let difference = position - this.state.oldFingerPostion;
         let ballPositionInRelationToSlider = this.state.ballPositionLeft - leftEdge;
 
         if(position < leftEdge){
+
             this.setState({
-                leftPosition: position,
-                rightPosition: position + this.state.currentWidth,
+                leftPosition: parseInt(Math.round(position)),
+                rightPosition: parseInt(Math.round(position + this.state.currentWidth)),
             }, () => {
-                this.ifBallStuck(this.state.leftPosition + ballPositionInRelationToSlider)
+                this.ifBallStuck(parseInt(Math.round(this.state.leftPosition + ballPositionInRelationToSlider)))
             })
         }else if(position > rightEdge){
+
             this.setState({
-                leftPosition: position - this.state.currentWidth,
-                rightPosition: position + this.state.currentWidth,
+                
+                leftPosition: parseInt(Math.round(position - this.state.currentWidth)),
+                rightPosition: parseInt(Math.round(position + this.state.currentWidth)),
             }, () => {
-                this.ifBallStuck(this.state.leftPosition + ballPositionInRelationToSlider)
+                this.ifBallStuck(parseInt(Math.round(this.state.leftPosition + ballPositionInRelationToSlider)))
             })
         }else{
-
-            let newLeftPosition = this.state.leftPosition + difference;
+            
+            let newLeftPosition = parseInt(Math.round(this.state.leftPosition + difference).toFixed(2));
             if(newLeftPosition < 0){
                 newLeftPosition = 0;
             }else if(newLeftPosition > (screenWidth - this.state.currentWidth)){
-                newLeftPosition = screenWidth - this.state.currentWidth;
+                newLeftPosition = parseInt(Math.round(screenWidth - this.state.currentWidth));
             }
+
             this.setState({
                 leftPosition: newLeftPosition,
-                rightPosition: newLeftPosition + this.state.currentWidth,
+                rightPosition: parseInt(Math.round(newLeftPosition + this.state.currentWidth)),
             }, () => {
-                this.ifBallStuck(this.state.leftPosition + ballPositionInRelationToSlider)
+                this.ifBallStuck(parseInt(Math.round(this.state.leftPosition + ballPositionInRelationToSlider)))
             })
         }
 
@@ -81,7 +85,7 @@ class SliderAndBall extends Component {
         if(this.state.ballStuck){
             this.setState({
                 ballPositionLeft: newValue,
-                ballPositionBottom: 10,
+                ballPositionBottom: 40,
             })
         }
     }
@@ -124,9 +128,13 @@ class SliderAndBall extends Component {
             ballStuck: false,
             ballInterval: setInterval(() => {
                 this.calculateNewPosition();
-            }, 33)
+            }, 10)
         });
 
+    }
+
+    shouldComponentUpdate = () => {
+        return false;
     }
 
     ballTick = () => {
@@ -134,35 +142,37 @@ class SliderAndBall extends Component {
     }
 
     calculateNewPosition = () => {
-        if(!this.state.gameHeight){
+
+        let {ballPositionBottom, ballDirectionY, ballSpeed, ballPositionLeft, ballDirectionX, gameHeight, leftPosition, rightPosition} = this.state;
+
+        if(!gameHeight){
             return null;
         }
 
-        let newVertical = parseInt(this.state.ballPositionBottom + this.state.ballDirectionY * this.state.ballSpeed);
-        let newHorizontal = parseInt(this.state.ballPositionLeft + this.state.ballDirectionX * this.state.ballSpeed);
+        let newVertical = parseInt(ballPositionBottom + ballDirectionY * ballSpeed);
+        let newHorizontal = parseInt(ballPositionLeft + ballDirectionX * ballSpeed);
 
         //BOOLEANS
 
-        let topWallImpact = (newVertical > this.state.gameHeight);
+        let topWallImpact = (newVertical > gameHeight);
         let leftWallImpact = (newHorizontal <= 0);
         let rightWallImpact = (newHorizontal >= screenWidth - 30);
-        let sliderImpact = (this.state.ballDirectionY < 0) &&((newVertical <= 40) && (newHorizontal >= (this.state.leftPosition - 30)) && (newHorizontal <= (this.state.rightPosition)));
-        let dead = (newVertical <= 40 && ((newHorizontal < this.state.leftPosition) || (newHorizontal > this.state.rightPosition)));
+        let sliderImpact = (ballDirectionY < 0) &&((newVertical <= 40) && (newHorizontal >= (leftPosition - 30)) && (newHorizontal <= (rightPosition)));
+        let dead = (newVertical <= 40 && ((newHorizontal < leftPosition - 30) || (newHorizontal > rightPosition)));
         
-        let ballDirectionY = this.state.ballDirectionY;
-        let ballDirectionX = this.state.ballDirectionX;
-
         if(topWallImpact){
-            newVertical = this.state.gameHeight;
+            newVertical = gameHeight;
             ballDirectionY = 0 - ballDirectionY;
         }else if(sliderImpact){
             let [newX, newY] = this.calculateNewAngle(newHorizontal);
-            console.log(newX, newY)
             newVertical = 40,
             ballDirectionY = newY;
             ballDirectionX = newX;
         }else if(dead){
-            //WHAT IF DEAD!!!!!!!!!!!!!!!!!!!
+            clearInterval(this.state.ballInterval);
+            this.setState({
+                ballInterval: null,
+            });
         }
 
         if(leftWallImpact){
@@ -173,12 +183,18 @@ class SliderAndBall extends Component {
             ballDirectionX = 0 - ballDirectionX;
         }
 
+        if(newVertical < 40){
+            newVertical = 40
+        }
+
         this.setState({
             ballDirectionX: ballDirectionX,
             ballDirectionY: ballDirectionY,
             ballPositionLeft: newHorizontal,
             ballPositionBottom: newVertical
-        })
+        });
+
+        this.forceUpdate();
     }
 
     calculateNewAngle = (newHorizontal) => {
@@ -191,9 +207,10 @@ class SliderAndBall extends Component {
     slider = () => {
         return (
             <View style={styles.sliderContainer}
+                key={"slider"}
                 onStartShouldSetResponder={(event) => {
-                    const pageX = Math.round(event.nativeEvent.pageX);
-                    const pageY = Math.round(event.nativeEvent.pageY);
+                    const pageX = event.nativeEvent.pageX.toFixed(2);
+                    const pageY = event.nativeEvent.pageY.toFixed(2);
 
                     this.setState({
                         oldFingerPostion: pageX
