@@ -10,6 +10,8 @@ const brickHeight = (parseInt((screenHeight * PixelRatio.get()) / 30))/PixelRati
 const brickWidth = screenWidth/7;
 const imageCache2 = require("../images/grunge2.png");
 
+import Ball from "./Ball";
+
 class SliderAndBall extends Component {
 
     state = { 
@@ -18,17 +20,12 @@ class SliderAndBall extends Component {
         leftPosition: parseInt(screenWidth/2 - screenWidth/8),
         rightPosition: parseInt(screenWidth/2 + screenWidth/8),
         oldFingerPostion: null,
+        thumbYStartPosition: null,
+        weaponFired: true,
         ballPositionLeft: parseInt(screenWidth/2 - 15),
         ballPositionBottom: 40,
         ballStuck: true,
-        thumbYStartPosition: null,
-        weaponFired: true,
-        ballInterval: null,
-        ballSpeed: 10,
-        ballDirectionX: 0,
-        ballDirectionY: 1,
-        gameHeight: null,
-        frameLength: 10,
+        weaponFireTally: 0,
     }
 
     sliderMove = (position) => {
@@ -37,7 +34,7 @@ class SliderAndBall extends Component {
         let rightEdge = leftEdge + this.state.currentWidth;
         let difference = position - this.state.oldFingerPostion;
         let ballPositionInRelationToSlider = this.state.ballPositionLeft - leftEdge;
-        let newLeftPosition = parseInt(position);
+
         if(position < leftEdge){
             this.setState({
                 leftPosition: parseInt(position),
@@ -71,12 +68,18 @@ class SliderAndBall extends Component {
             })
         }
         
-        //CODE TO UPDATE PARENT WITH SLIDER POSITION - WILL NEED TO ADD BALL POSITION
         this.props.setSliderPosition(this.state.leftPosition, this.state.leftPosition + this.state.currentWidth);
 
         this.setState({
             oldFingerPostion: parseInt(position)
         });
+    }
+
+    fireWeapon = () => {
+
+       this.setState({
+           weaponFireTally: this.state.weaponFireTally + 1,
+       })
     }
 
     ifBallStuck = (newValue) => {
@@ -89,114 +92,9 @@ class SliderAndBall extends Component {
         }
     }
 
-    ball = () => {
-        return (
-            <View style={[styles.ball, {
-                bottom: this.state.ballPositionBottom, 
-                left: this.state.ballPositionLeft
-            }]}>
-                <RadialGradient 
-                style={{
-                        height: 30,
-                        width: 30,
-                    }}
-                colors={['black','#8f8f8f','#bfbfbf','#e6e6e6']}
-                center={[15,40]}
-                radius={30}> 
-                </RadialGradient>
-                
-            </View>
-        );
-    }
-
-    fireWeapon = () => {
-        if(this.state.ballStuck){
-            this.animateBall()
-        }else{
-            //FIRE WEAPON IF ONE IS AVAILABLE
-        }
-    }
-
-    //BALL MOVING SECTION
-    //BALL MOVING SECTION
-    //BALL MOVING SECTION
-    //BALL MOVING SECTION
-
-    animateBall = () => {
-        this.setState({
-            ballStuck: false,
-            ballInterval: setInterval(() => {
-                this.calculateNewPosition();
-            }, this.state.frameLength)
-        });
-
-    }
-
+    
     shouldComponentUpdate = () => {
         return false;
-    }
-
-    ballTick = () => {
-
-    }
-
-    calculateNewPosition = () => {
-
-        let {ballPositionBottom, ballDirectionY, ballSpeed, ballPositionLeft, ballDirectionX, gameHeight, leftPosition, rightPosition} = this.state;
-
-        if(!gameHeight){
-            return null;
-        }
-
-        let newVertical = parseInt(ballPositionBottom + ballDirectionY * ballSpeed);
-        let newHorizontal = parseInt(ballPositionLeft + ballDirectionX * ballSpeed);
-
-        //BOOLEANS
-
-        let topWallImpact = (newVertical > gameHeight);
-        let leftWallImpact = (newHorizontal <= 0);
-        let rightWallImpact = (newHorizontal >= screenWidth - 30);
-        let sliderImpact = (ballDirectionY < 0 && newVertical <= 40 && newHorizontal >= (leftPosition - 30) && newHorizontal <= rightPosition);
-        let dead = (newVertical <= 40 && (newHorizontal < leftPosition - 30 || newHorizontal > rightPosition));
-        
-        if(topWallImpact){
-            newVertical = gameHeight;
-            ballDirectionY = 0 - ballDirectionY;
-        }else if(sliderImpact){
-            let [newX, newY] = this.calculateNewAngle(newHorizontal);
-            newVertical = 40,
-            ballDirectionY = newY;
-            ballDirectionX = newX;
-        }else if(dead){
-            // clearInterval(this.state.ballInterval);
-            // this.setState({
-            //     ballInterval: null,
-            // });
-        }
-
-        if(leftWallImpact){
-            newHorizontal = 0;
-            ballDirectionX = 0 - ballDirectionX;
-        }else if(rightWallImpact){
-            newHorizontal = screenWidth - 30;
-            ballDirectionX = 0 - ballDirectionX;
-        }
-
-        this.setState({
-            ballDirectionX: ballDirectionX,
-            ballDirectionY: ballDirectionY,
-            ballPositionLeft: newHorizontal,
-            ballPositionBottom: newVertical
-        });
-
-        this.forceUpdate();
-    }
-
-    calculateNewAngle = (newHorizontal) => {
-        let positionOnSliderAsFraction = ((newHorizontal + 30 - this.state.leftPosition)/(this.state.rightPosition - this.state.leftPosition + 30)).toFixed(4);
-        let newX = ((positionOnSliderAsFraction - 0.5) * 1.5).toFixed(4);
-        let newY = Math.sqrt(1 - newX * newX).toFixed(4);
-        return [newX, newY]
     }
 
     slider = () => {
@@ -204,7 +102,7 @@ class SliderAndBall extends Component {
             <View style={styles.sliderContainer}
                 key={"slider"}
                 onStartShouldSetResponder={(event) => {
-                    const pageX = event.nativeEvent.pageX.toFixed(2);
+                        const pageX = event.nativeEvent.pageX.toFixed(2);
                     const pageY = event.nativeEvent.pageY.toFixed(2);
 
                     this.setState({
@@ -229,11 +127,12 @@ class SliderAndBall extends Component {
                         if(this.state.sliderActive){
                             this.sliderMove(pageX);
                             if((pageY < (this.state.thumbYStartPosition - screenHeight/8)) && !this.state.weaponFired){
+                                
                                 this.setState({
                                     weaponFired: true,
                                 })
                                 this.fireWeapon();
-                            }else if(pageY > (this.state.thumbYStartPosition - 20)){
+                            }else if(pageY > (this.state.thumbYStartPosition - 50)){
                                 this.setState({
                                     weaponFired: false,
                                 })
@@ -278,6 +177,7 @@ class SliderAndBall extends Component {
             </View>
         )
     }
+
     render = () => { 
         return ( 
             <View 
@@ -288,7 +188,17 @@ class SliderAndBall extends Component {
                 })
               }}
               style={styles.container}>
-                {this.ball()}
+                <Ball 
+                    ballPositionLeft={this.state.ballPositionLeft}
+                    ballPositionBottom={this.state.ballPositionBottom}
+                    ballStuck={this.state.ballStuck}
+                    weaponFireTally={this.state.weaponFireTally}
+                    gameHeight={this.state.gameHeight}
+                    sliderLeftPosition={this.state.leftPosition}
+                    sliderRightPosition={this.state.rightPosition}
+                    X={0}
+                    Y={1}
+                />
                 {this.slider()}
             </View>
         );
@@ -315,14 +225,6 @@ const styles = StyleSheet.create({
         zIndex: 2,
         width: "100%"  
     },
-    ball: {
-        height: 30,
-        width: 30,
-        borderRadius: 15,
-        position: "absolute",
-        overflow: "hidden",
-        zIndex: 1,
-    }
 })
  
 export default SliderAndBall;
